@@ -1,9 +1,11 @@
-import Header from './Header/Header';
+import FilterWidget from './FilterWidget/FilterWidget';
 
 const App = () => {
   return (
     <div className="wrapper">
-      <Header />
+      <header>
+        <FilterWidget />
+      </header>
     </div>
   );
 };

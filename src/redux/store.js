@@ -1,6 +1,7 @@
 import { combineReducers, compose, createStore } from 'redux';
+import filterWidgetReducer from './FilterWidget/reducer';
 
-const rootReducer = function () {}; //combineReducers({ youTubeVideos: youTubeVideosReducer });
+const rootReducer = combineReducers({ filterWidget: filterWidgetReducer });
 
 const store = createStore(
   rootReducer,
