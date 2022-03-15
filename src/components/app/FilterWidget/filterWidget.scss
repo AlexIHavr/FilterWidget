@@ -2,6 +2,28 @@
   display: flex;
   margin: 0 !important;
 
+  input[type='checkbox'].filled-in {
+    &:not(:checked) + span:not(.lever):after {
+      background-color: #9fa1a5;
+      border: none;
+    }
+    &:checked {
+      & + span:not(.lever)::after {
+        background-color: white;
+        border: none;
+      }
+
+      & + span:not(.lever):before {
+        border-right-color: black;
+        border-bottom-color: black;
+      }
+
+      & + span {
+        color: white;
+      }
+    }
+  }
+
   .active {
     display: block !important;
   }
@@ -14,7 +36,7 @@
   .filterWidget {
     display: none;
     position: absolute;
-    width: 50%;
+    width: 70%;
     min-width: 300px;
     left: 90px;
     top: 20px;
@@ -69,6 +91,7 @@
       }
 
       &.results {
+        display: none;
         .row {
           &:not(:last-child) {
             margin-bottom: 15px;
@@ -78,18 +101,6 @@
             font-style: italic;
           }
         }
-      }
-
-      .selectedResult {
-        margin-left: 3px;
-        width: 16px;
-        height: 16px;
-        background-color: #b8b7b7;
-        border-radius: 3px;
-        -webkit-border-radius: 3px;
-        -moz-border-radius: 3px;
-        -ms-border-radius: 3px;
-        -o-border-radius: 3px;
       }
 
       .filterName {
@@ -109,16 +120,16 @@
         font-size: 1.5rem;
       }
 
-      &.contexts .innerFilter {
+      &.context .innerFilter {
         z-index: 5;
       }
 
-      &.dimensions .innerFilter {
+      &.dimension .innerFilter {
         z-index: 4;
       }
 
-      &.contexts,
-      &.dimensions {
+      &.context,
+      &.dimension {
         position: relative;
 
         .arrowFilter {

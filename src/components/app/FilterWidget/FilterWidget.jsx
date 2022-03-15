@@ -1,13 +1,28 @@
 import classNames from 'classnames';
 import { useState } from 'react';
 import { connect } from 'react-redux';
-import { setSearchType, toggleAlphabetSort } from '../../../redux/FilterWidget/actions';
+import {
+  setSearchType,
+  setSelectedAllValues,
+  toggleAlphabetSort,
+  toggleSelectedContext,
+  toggleSelectedDimension,
+  toggleSelectedValue,
+} from '../../../redux/FilterWidget/actions';
 import Filter from './Filter/Filter';
 import './filterWidget.scss';
 import Results from './Results/Results';
 import Search from './Search/Search';
 
-const FilterWidget = ({ state, setSearchType, toggleAlphabetSort }) => {
+const FilterWidget = ({
+  state,
+  setSearchType,
+  toggleAlphabetSort,
+  toggleSelectedContext,
+  toggleSelectedDimension,
+  toggleSelectedValue,
+  setSelectedAllValues,
+}) => {
   const [activeFilterWidget, toggleFilterWidget] = useState(false);
 
   return (
@@ -33,20 +48,47 @@ const FilterWidget = ({ state, setSearchType, toggleAlphabetSort }) => {
             <span>FILTERS</span>
           </div>
         </div>
-        <Filter name="contexts" />
-        <Filter name="dimensions" />
+        <Filter
+          name="context"
+          filters={state.filters}
+          toggleSelectedFilter={toggleSelectedContext}
+        ></Filter>
+        <Filter
+          name="dimension"
+          filters={state.filters
+            .filter(({ selected }) => selected)
+            .reduce(
+              (filters, { dimensions, context }) => [
+                ...filters,
+                ...dimensions.map((dimension) => ({ ...dimension, context })),
+              ],
+              []
+            )}
+          toggleSelectedFilter={toggleSelectedDimension}
+        ></Filter>
         <Search
           state={state}
           setSearchType={setSearchType}
           toggleAlphabetSort={toggleAlphabetSort}
         />
-        <Results />
+        <Results
+          state={state}
+          toggleSelectedValue={toggleSelectedValue}
+          setSelectedAllValues={setSelectedAllValues}
+        />
       </div>
     </div>
   );
 };
 
 const mapStateToProps = ({ filterWidget }) => ({ state: filterWidget });
-const mapDispatchToProps = { setSearchType, toggleAlphabetSort };
+const mapDispatchToProps = {
+  setSearchType,
+  toggleAlphabetSort,
+  toggleSelectedContext,
+  toggleSelectedDimension,
+  toggleSelectedValue,
+  setSelectedAllValues,
+};
 
 export default connect(mapStateToProps, mapDispatchToProps)(FilterWidget);
