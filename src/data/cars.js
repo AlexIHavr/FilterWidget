@@ -1,4 +1,4 @@
-const cars = [
+export default [
   {
     name: 'BMW',
     brand: 'M5',
@@ -40,5 +40,3 @@ const cars = [
     },
   },
 ];
-
-export default cars;

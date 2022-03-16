@@ -2,7 +2,7 @@ import classNames from 'classnames';
 import { useState } from 'react';
 import { connect } from 'react-redux';
 import {
-  setSearchType,
+  setMatchValues,
   setSelectedAllValues,
   toggleAlphabetSort,
   toggleSelectedContext,
@@ -16,12 +16,12 @@ import Search from './Search/Search';
 
 const FilterWidget = ({
   state,
-  setSearchType,
   toggleAlphabetSort,
   toggleSelectedContext,
   toggleSelectedDimension,
   toggleSelectedValue,
   setSelectedAllValues,
+  setMatchValues,
 }) => {
   const [activeFilterWidget, toggleFilterWidget] = useState(false);
 
@@ -55,21 +55,13 @@ const FilterWidget = ({
         ></Filter>
         <Filter
           name="dimension"
-          filters={state.filters
-            .filter(({ selected }) => selected)
-            .reduce(
-              (filters, { dimensions, context }) => [
-                ...filters,
-                ...dimensions.map((dimension) => ({ ...dimension, context })),
-              ],
-              []
-            )}
+          filters={state.filters.filter(({ context: { selected } }) => selected)}
           toggleSelectedFilter={toggleSelectedDimension}
         ></Filter>
         <Search
           state={state}
-          setSearchType={setSearchType}
           toggleAlphabetSort={toggleAlphabetSort}
+          setMatchValues={setMatchValues}
         />
         <Results
           state={state}
@@ -83,12 +75,12 @@ const FilterWidget = ({
 
 const mapStateToProps = ({ filterWidget }) => ({ state: filterWidget });
 const mapDispatchToProps = {
-  setSearchType,
   toggleAlphabetSort,
   toggleSelectedContext,
   toggleSelectedDimension,
   toggleSelectedValue,
   setSelectedAllValues,
+  setMatchValues,
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(FilterWidget);

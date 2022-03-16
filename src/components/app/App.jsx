@@ -1,3 +1,4 @@
+import Content from './Content/Content';
 import FilterWidget from './FilterWidget/FilterWidget';
 
 const App = () => {
@@ -6,6 +7,7 @@ const App = () => {
       <header>
         <FilterWidget />
       </header>
+      <Content />
     </div>
   );
 };

@@ -1,8 +1,11 @@
 import classNames from 'classnames';
 import { useState } from 'react';
+import { getUniqueFilters } from '../../../../helpers/filterHelpers';
 
 const Filter = ({ name, filters, toggleSelectedFilter }) => {
   const [activeFilter, toggleFilter] = useState(false);
+
+  const uniqueFilters = getUniqueFilters(filters, name);
 
   return (
     <div className={classNames(name, 'row')}>
@@ -10,7 +13,7 @@ const Filter = ({ name, filters, toggleSelectedFilter }) => {
         className={classNames('col clickable arrowFilter', {
           rotate: activeFilter,
         })}
-        onClick={() => filters.length && toggleFilter(!activeFilter)}
+        onClick={() => uniqueFilters.length && toggleFilter(!activeFilter)}
       >
         <i className="material-icons">keyboard_arrow_down</i>
       </div>
@@ -19,25 +22,29 @@ const Filter = ({ name, filters, toggleSelectedFilter }) => {
       </div>
       <div className="selectedFilter col">
         <span>
-          {filters
-            .filter(({ selected }) => selected)
-            .map((filter) => filter[name])
+          {uniqueFilters
+            .filter((filter) => filter[name].selected)
+            .map((filter) => filter[name].name)
             .join(', ')}
         </span>
       </div>
       <div className={classNames('innerFilter col', { active: activeFilter })}>
-        {filters.map((filter) => (
-          <div key={filter[name]} className="row">
+        {uniqueFilters.map((filter) => (
+          <div key={filter.id} className="row">
             <div className="col clickable">
               <label>
                 <input
                   type="checkbox"
                   className="filled-in"
                   onChange={() =>
-                    toggleSelectedFilter({ context: filter.context, dimension: filter.dimension })
+                    toggleSelectedFilter({
+                      context: filter.context.name,
+                      dimension: filter.dimension.name,
+                    })
                   }
+                  checked={filter[name].selected}
                 />
-                <span>{filter[name]}</span>
+                <span>{filter[name].name}</span>
               </label>
             </div>
           </div>

@@ -1,6 +1,6 @@
 import initialState from './initialState';
 import {
-  SET_SEARCH_TYPE,
+  SET_MATCH_VALUES,
   SET_SELECTED_ALL_VALUES,
   TOGGLE_ALPHABET_SORT,
   TOGGLE_SELECTED_CONTEXT,
@@ -13,13 +13,10 @@ const filterWidgetReducer = (state = initialState, action) => {
     case TOGGLE_ALPHABET_SORT:
       return { ...state, alphabetSort: !state.alphabetSort };
 
-    case SET_SEARCH_TYPE:
-      return { ...state, searchType: action.payload };
-
     case TOGGLE_SELECTED_CONTEXT:
       const selectedContext = state.filters.map((filter) =>
-        filter.context === action.payload.context
-          ? { ...filter, selected: !filter.selected }
+        filter.context.name === action.payload.context
+          ? { ...filter, context: { ...filter.context, selected: !filter.context.selected } }
           : filter
       );
 
@@ -30,15 +27,9 @@ const filterWidgetReducer = (state = initialState, action) => {
 
     case TOGGLE_SELECTED_DIMENSION:
       const selectedDimension = state.filters.map((filter) =>
-        filter.context === action.payload.context
-          ? {
-              ...filter,
-              dimensions: filter.dimensions.map((dimension) =>
-                dimension.dimension === action.payload.dimension
-                  ? { ...dimension, selected: !dimension.selected }
-                  : dimension
-              ),
-            }
+        filter.context.name === action.payload.context &&
+        filter.dimension.name === action.payload.dimension
+          ? { ...filter, dimension: { ...filter.dimension, selected: !filter.dimension.selected } }
           : filter
       );
 
@@ -49,25 +40,12 @@ const filterWidgetReducer = (state = initialState, action) => {
 
     case TOGGLE_SELECTED_VALUE:
       const selectedValue = state.filters.map((filter) =>
-        filter.context === action.payload.context
-          ? {
-              ...filter,
-              dimensions: filter.dimensions.map((dimension) =>
-                dimension.dimension === action.payload.dimension
-                  ? {
-                      ...dimension,
-                      values: dimension.values.map((value) =>
-                        value.value === action.payload.value
-                          ? { ...value, selected: !value.selected }
-                          : value
-                      ),
-                    }
-                  : dimension
-              ),
-            }
+        filter.context.name === action.payload.context &&
+        filter.dimension.name === action.payload.dimension &&
+        filter.value.name === action.payload.value
+          ? { ...filter, value: { ...filter.value, selected: !filter.value.selected } }
           : filter
       );
-
       return {
         ...state,
         filters: selectedValue,
@@ -75,27 +53,32 @@ const filterWidgetReducer = (state = initialState, action) => {
 
     case SET_SELECTED_ALL_VALUES:
       const selectedAllValues = state.filters.map((filter) =>
-        filter.selected
-          ? {
-              ...filter,
-              dimensions: filter.dimensions.map((dimension) =>
-                dimension.selected
-                  ? {
-                      ...dimension,
-                      values: dimension.values.map((value) => ({
-                        ...value,
-                        selected: action.payload,
-                      })),
-                    }
-                  : dimension
-              ),
-            }
+        filter.context.selected && filter.dimension.selected
+          ? { ...filter, value: { ...filter.value, selected: action.payload } }
           : filter
       );
 
       return {
         ...state,
         filters: selectedAllValues,
+      };
+
+    case SET_MATCH_VALUES:
+      const matchValues = state.filters.map((filter) =>
+        action.payload.some(({ id }) => id === filter.id)
+          ? {
+              ...filter,
+              value: { ...filter.value, match: true },
+            }
+          : {
+              ...filter,
+              value: { ...filter.value, match: false },
+            }
+      );
+
+      return {
+        ...state,
+        filters: matchValues,
       };
 
     default:

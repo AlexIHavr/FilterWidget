@@ -1,0 +1,11 @@
+.content {
+  ul {
+    border: none;
+    li {
+      &.collection-header {
+        text-align: center;
+      }
+      background-color: #e3f2fd !important;
+    }
+  }
+}

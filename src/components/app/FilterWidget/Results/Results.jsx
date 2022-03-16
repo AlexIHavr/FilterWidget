@@ -1,34 +1,32 @@
 import classNames from 'classnames';
 import { useEffect, useState } from 'react';
+import { getUniqueFilters } from '../../../../helpers/filterHelpers';
 
 const Results = ({ state, toggleSelectedValue, setSelectedAllValues }) => {
   const [selectAll, setSelectAll] = useState(false);
 
-  const values = state.filters
-    .filter(({ selected }) => selected)
-    .reduce(
-      (filters, { dimensions, context }) => [
-        ...filters,
-        ...dimensions
-          .filter(({ selected }) => selected)
-          .reduce(
-            (allValues, { dimension, values }) => [
-              ...allValues,
-              ...values.map((value) => ({ ...value, dimension, context })),
-            ],
-            []
-          ),
-      ],
-      []
-    );
+  let uniqueSelectedValues = getUniqueFilters(
+    state.filters.filter(({ context, dimension }) => context.selected && dimension.selected),
+    'value'
+  );
+
+  if (state.alphabetSort) {
+    uniqueSelectedValues = uniqueSelectedValues.sort((value, nextValue) => {
+      if (value.value.name < nextValue.value.name) return -1;
+
+      if (value.value.name > nextValue.value.name) return 1;
+
+      return 0;
+    });
+  }
 
   useEffect(() => {
-    setSelectedAllValues(selectAll);
+    if (uniqueSelectedValues.length) setSelectedAllValues(selectAll);
   }, [selectAll]);
 
   return (
-    <div className={classNames('results row', { active: values.length })}>
-      <div className="row">
+    <div className={classNames('results row', { active: uniqueSelectedValues.length })}>
+      <div className="row activeFlex">
         <div className="col clickable">
           <label>
             <input
@@ -41,17 +39,23 @@ const Results = ({ state, toggleSelectedValue, setSelectedAllValues }) => {
         </div>
       </div>
 
-      {values.map(({ value, context, dimension, selected }) => (
-        <div key={context + dimension + value} className="row">
+      {uniqueSelectedValues.map(({ id, value, context, dimension }) => (
+        <div key={id} className={classNames('row', { activeFlex: value.match })}>
           <div className="col clickable">
             <label>
               <input
                 type="checkbox"
                 className="filled-in"
-                onChange={() => toggleSelectedValue({ context, dimension, value })}
-                checked={selected}
+                onChange={() =>
+                  toggleSelectedValue({
+                    context: context.name,
+                    dimension: dimension.name,
+                    value: value.name,
+                  })
+                }
+                checked={value.selected}
               />
-              <span>{value}</span>
+              <span>{value.name}</span>
             </label>
           </div>
         </div>

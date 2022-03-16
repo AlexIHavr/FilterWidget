@@ -1,6 +1,7 @@
 .filterWidgetWrapper {
   display: flex;
   margin: 0 !important;
+  z-index: 1;
 
   input[type='checkbox'].filled-in {
     &:not(:checked) + span:not(.lever):after {
@@ -27,6 +28,10 @@
   .active {
     display: block !important;
   }
+  .activeFlex {
+    display: flex !important;
+  }
+
   .filterWidgetBtn {
     margin: 5px 5px 5px 20px;
     i {
@@ -93,6 +98,7 @@
       &.results {
         display: none;
         .row {
+          display: none;
           &:not(:last-child) {
             margin-bottom: 15px;
           }

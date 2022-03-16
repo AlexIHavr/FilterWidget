@@ -1,125 +1,35 @@
-import { EXACT } from '../../components/app/FilterWidget/Search/constants';
+import { v4 } from 'uuid';
 import cars from '../../data/cars';
 
-// [
-//   {
-//     context: { name: 'engine', selected: false },
-//     dimension: { name: 'volume', selected: false },
-//     value: { name: 3, selected: false },
-//   },
-//   {
-//     context: { name: 'engine', selected: false },
-//     dimension: { name: 'volume', selected: false },
-//     value: { name: 2, selected: false },
-//   },
-// ];
+let filters = [];
 
-const filters = [
-  {
-    context: 'engine',
-    dimensions: [
-      {
-        dimension: 'weight',
-        values: [
-          {
-            value: 10,
-            selected: false,
-          },
-          {
-            value: 25,
-            selected: false,
-          },
-        ],
-        selected: false,
-      },
-      {
-        dimension: 'volume',
-        values: [
-          {
-            value: 3,
-            selected: false,
-          },
-          {
-            value: 2,
-            selected: false,
-          },
-        ],
-        selected: false,
-      },
-      {
-        dimension: 'power',
-        values: [
-          {
-            value: 230,
-            selected: false,
-          },
-          {
-            value: 500,
-            selected: false,
-          },
-        ],
-        selected: false,
-      },
-    ],
-    selected: false,
-  },
-  {
-    context: 'transmission',
-    dimensions: [
-      {
-        dimension: 'maxSpeed',
-        values: [
-          {
-            value: 250,
-            selected: false,
-          },
-          {
-            value: 350,
-            selected: false,
-          },
-        ],
-        selected: false,
-      },
-      {
-        dimension: 'gears',
-        values: [
-          {
-            value: 5,
-            selected: false,
-          },
-        ],
-        selected: false,
-      },
-      {
-        dimension: 'type',
-        values: [
-          {
-            value: 'manual',
-            selected: false,
-          },
-          {
-            value: 'auto',
-            selected: false,
-          },
-        ],
-        selected: false,
-      },
-    ],
-    selected: false,
-  },
-];
+cars.forEach(({ contexts, ...properties }) => {
+  for (let context in contexts) {
+    const dimensions = contexts[context];
 
-// for (let context in cars) {
-//   filters.push({
-//     context,
-//     dimensions: [],
-//     selected: false,
-//   });
-// }
+    for (let dimension in dimensions) {
+      filters.push({
+        id: v4(),
+        ...properties,
+        context: {
+          name: context,
+          selected: false,
+        },
+        dimension: {
+          name: dimension,
+          selected: false,
+        },
+        value: {
+          name: dimensions[dimension],
+          selected: false,
+          match: true,
+        },
+      });
+    }
+  }
+});
 
 export default {
   filters,
   alphabetSort: false,
-  searchType: EXACT,
-  results: [],
 };

@@ -1,11 +1,12 @@
-import React from 'react';
 import classNames from 'classnames';
-import { useCallback, useState } from 'react';
-import { SEARCH_TYPES } from './constants';
+import { useCallback, useEffect, useState } from 'react';
+import { EXACT, PARTIAL, SEARCH_TYPES, STARTS_WITH } from './constants';
 import './search.scss';
 
-const Search = ({ state, setSearchType, toggleAlphabetSort }) => {
+const Search = ({ state, toggleAlphabetSort, setMatchValues }) => {
+  const [searchType, setSearchType] = useState(EXACT);
   const [selectSearchTypes, setSelectSearchTypes] = useState(false);
+  const [searchString, setSearchString] = useState(null);
 
   const setSearchTypeOnClick = useCallback(
     (type) => {
@@ -18,15 +19,15 @@ const Search = ({ state, setSearchType, toggleAlphabetSort }) => {
   const getSelectSearchTypes = useCallback(() => {
     return !selectSearchTypes ? (
       <div
-        className={classNames('clickable', state.searchType)}
+        className={classNames('clickable', searchType)}
         onClick={() => setSelectSearchTypes(true)}
       >
-        {SEARCH_TYPES.find(({ type }) => type === state.searchType).symbol}
+        {SEARCH_TYPES.find(({ type }) => type === searchType).symbol}
       </div>
     ) : (
       [
-        SEARCH_TYPES.find(({ type }) => type === state.searchType),
-        ...SEARCH_TYPES.filter(({ type }) => type !== state.searchType),
+        SEARCH_TYPES.find(({ type }) => type === searchType),
+        ...SEARCH_TYPES.filter(({ type }) => type !== searchType),
       ].map(({ type, symbol }) => (
         <div
           key={type}
@@ -39,6 +40,32 @@ const Search = ({ state, setSearchType, toggleAlphabetSort }) => {
     );
   }, [selectSearchTypes]);
 
+  useEffect(() => {
+    if (searchString === null) return;
+
+    const filterValues = state.filters.filter(
+      ({ context, dimension }) => context.selected && dimension.selected
+    );
+
+    if (!searchString) return setMatchValues(filterValues);
+
+    switch (searchType) {
+      case EXACT:
+        setMatchValues(filterValues.filter(({ value: { name } }) => String(name) === searchString));
+        break;
+      case PARTIAL:
+        setMatchValues(
+          filterValues.filter(({ value: { name } }) => String(name).includes(searchString))
+        );
+        break;
+      case STARTS_WITH:
+        setMatchValues(
+          filterValues.filter(({ value: { name } }) => String(name).startsWith(searchString))
+        );
+        break;
+    }
+  }, [searchString, searchType]);
+
   return (
     <div className="search row">
       <div className="row">
@@ -47,7 +74,11 @@ const Search = ({ state, setSearchType, toggleAlphabetSort }) => {
             <button className="btn" type="submit">
               <i className="material-icons clickable">search</i>
             </button>
-            <input className="searchString" type="text" />
+            <input
+              className="searchString"
+              type="text"
+              onChange={(e) => setSearchString(e.target.value.trim())}
+            />
           </form>
         </div>
       </div>
@@ -63,4 +94,4 @@ const Search = ({ state, setSearchType, toggleAlphabetSort }) => {
   );
 };
 
-export default React.memo(Search);
+export default Search;
