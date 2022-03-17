@@ -1,7 +1,7 @@
 import React from 'react';
 import classNames from 'classnames';
 import { useState } from 'react';
-import { getUniqueFilters } from '../../../../helpers/filterHelpers';
+import { filterBySearchType, getUniqueFilters } from '../../../../helpers/filterHelpers';
 
 import './filter.scss';
 
@@ -39,12 +39,13 @@ const Filter = ({ name, filters, toggleSelectedFilter }) => {
                 <input
                   type="checkbox"
                   className="filled-in"
-                  onChange={() =>
+                  onChange={() => {
                     toggleSelectedFilter({
                       context: filter.context.name,
                       dimension: filter.dimension.name,
-                    })
-                  }
+                    });
+                    filterBySearchType();
+                  }}
                   checked={filter[name].selected}
                 />
                 <span>{filter[name].name}</span>

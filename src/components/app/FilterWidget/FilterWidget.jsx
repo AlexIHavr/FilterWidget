@@ -13,7 +13,8 @@ const FilterWidget = ({
   toggleSelectedDimension,
   toggleSelectedValue,
   setSelectedAllValues,
-  setMatchValues,
+  setSearchString,
+  setSearchType,
 }) => {
   const [activeFilterWidget, toggleFilterWidget] = useState(false);
 
@@ -53,7 +54,8 @@ const FilterWidget = ({
         <Search
           state={state}
           toggleAlphabetSort={toggleAlphabetSort}
-          setMatchValues={setMatchValues}
+          setSearchString={setSearchString}
+          setSearchType={setSearchType}
         />
         <Results
           state={state}

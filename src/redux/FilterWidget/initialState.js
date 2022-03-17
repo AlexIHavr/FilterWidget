@@ -1,4 +1,5 @@
 import { v4 } from 'uuid';
+import { EXACT } from '../../components/app/FilterWidget/Search/constants';
 import cars from '../../data/cars';
 
 let filters = [];
@@ -32,4 +33,6 @@ cars.forEach(({ contexts, ...properties }) => {
 export default {
   filters,
   alphabetSort: false,
+  searchType: EXACT,
+  searchString: '',
 };

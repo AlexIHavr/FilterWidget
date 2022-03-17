@@ -1,6 +1,8 @@
 import initialState from './initialState';
 import {
   SET_MATCH_VALUES,
+  SET_SEARCH_STRING,
+  SET_SEARCH_TYPE,
   SET_SELECTED_ALL_VALUES,
   TOGGLE_ALPHABET_SORT,
   TOGGLE_SELECTED_CONTEXT,
@@ -79,6 +81,18 @@ const filterWidgetReducer = (state = initialState, action) => {
       return {
         ...state,
         filters: matchValues,
+      };
+
+    case SET_SEARCH_STRING:
+      return {
+        ...state,
+        searchString: action.payload,
+      };
+
+    case SET_SEARCH_TYPE:
+      return {
+        ...state,
+        searchType: action.payload,
       };
 
     default:

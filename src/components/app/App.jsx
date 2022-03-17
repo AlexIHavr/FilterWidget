@@ -1,6 +1,7 @@
 import { connect } from 'react-redux';
 import {
-  setMatchValues,
+  setSearchString,
+  setSearchType,
   setSelectedAllValues,
   toggleAlphabetSort,
   toggleSelectedContext,
@@ -17,7 +18,8 @@ const App = ({
   toggleSelectedDimension,
   toggleSelectedValue,
   setSelectedAllValues,
-  setMatchValues,
+  setSearchString,
+  setSearchType,
 }) => {
   return (
     <div className="wrapper">
@@ -29,7 +31,8 @@ const App = ({
           toggleSelectedDimension={toggleSelectedDimension}
           toggleSelectedValue={toggleSelectedValue}
           setSelectedAllValues={setSelectedAllValues}
-          setMatchValues={setMatchValues}
+          setSearchString={setSearchString}
+          setSearchType={setSearchType}
         />
       </header>
       <Content filters={state.filters} />
@@ -44,7 +47,8 @@ const mapDispatchToProps = {
   toggleSelectedDimension,
   toggleSelectedValue,
   setSelectedAllValues,
-  setMatchValues,
+  setSearchString,
+  setSearchType,
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(App);
