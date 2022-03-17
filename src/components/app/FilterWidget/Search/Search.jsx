@@ -1,3 +1,4 @@
+import React from 'react';
 import classNames from 'classnames';
 import { useCallback, useEffect, useState } from 'react';
 import { EXACT, PARTIAL, SEARCH_TYPES, STARTS_WITH } from './constants';
@@ -94,4 +95,4 @@ const Search = ({ state, toggleAlphabetSort, setMatchValues }) => {
   );
 };
 
-export default Search;
+export default React.memo(Search);

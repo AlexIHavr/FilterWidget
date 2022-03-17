@@ -1,3 +1,4 @@
+import React from 'react';
 import classNames from 'classnames';
 import { useEffect, useState } from 'react';
 import { getUniqueFilters } from '../../../../helpers/filterHelpers';
@@ -66,4 +67,4 @@ const Results = ({ state, toggleSelectedValue, setSelectedAllValues }) => {
   );
 };
 
-export default Results;
+export default React.memo(Results);

@@ -1,8 +1,8 @@
-import { connect } from 'react-redux';
+import React from 'react';
 import { getUniqueFilters } from '../../../helpers/filterHelpers';
 import './content.scss';
 
-const Content = ({ state }) => {
+const Content = ({ filters }) => {
   return (
     <div className="content">
       <ul className="collection with-header">
@@ -10,7 +10,7 @@ const Content = ({ state }) => {
           <h4>Cars</h4>
         </li>
         {getUniqueFilters(
-          state.filters.filter(
+          filters.filter(
             ({ context, dimension, value }) =>
               context.selected && dimension.selected && value.selected
           )
@@ -24,6 +24,4 @@ const Content = ({ state }) => {
   );
 };
 
-const mapStateToProps = ({ filterWidget }) => ({ state: filterWidget });
-
-export default connect(mapStateToProps)(Content);
+export default React.memo(Content);

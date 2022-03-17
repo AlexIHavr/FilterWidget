@@ -1,3 +1,4 @@
+import React from 'react';
 import classNames from 'classnames';
 import { useState } from 'react';
 import { getUniqueFilters } from '../../../../helpers/filterHelpers';
@@ -56,4 +57,4 @@ const Filter = ({ name, filters, toggleSelectedFilter }) => {
   );
 };
 
-export default Filter;
+export default React.memo(Filter);
