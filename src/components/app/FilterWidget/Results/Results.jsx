@@ -2,6 +2,8 @@ import classNames from 'classnames';
 import { useEffect, useState } from 'react';
 import { getUniqueFilters } from '../../../../helpers/filterHelpers';
 
+import './results.scss';
+
 const Results = ({ state, toggleSelectedValue, setSelectedAllValues }) => {
   const [selectAll, setSelectAll] = useState(false);
 

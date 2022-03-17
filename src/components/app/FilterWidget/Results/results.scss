@@ -1,0 +1,31 @@
+.results {
+  display: none;
+  max-height: 400px;
+  overflow-y: auto;
+  .filterWidgetWrapper .filterWidget & .row {
+    display: none;
+    &:not(:last-child) {
+      margin-bottom: 15px !important;
+    }
+
+    .showAll {
+      font-style: italic;
+    }
+  }
+
+  &::-webkit-scrollbar {
+    width: 10px;
+  }
+  &::-webkit-scrollbar-track {
+    background: #747c8a;
+    border-radius: 5px;
+    -webkit-border-radius: 5px;
+    -moz-border-radius: 5px;
+    -ms-border-radius: 5px;
+    -o-border-radius: 5px;
+  }
+  &::-webkit-scrollbar-thumb {
+    background-color: #3a3e44;
+    border-radius: 20px;
+  }
+}

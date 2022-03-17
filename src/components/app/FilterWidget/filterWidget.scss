@@ -95,20 +95,6 @@
         }
       }
 
-      &.results {
-        display: none;
-        .row {
-          display: none;
-          &:not(:last-child) {
-            margin-bottom: 15px;
-          }
-
-          .showAll {
-            font-style: italic;
-          }
-        }
-      }
-
       .filterName {
         margin-left: 10px;
       }
@@ -124,50 +110,6 @@
 
       &:not(.filterHeader) i {
         font-size: 1.5rem;
-      }
-
-      &.context .innerFilter {
-        z-index: 5;
-      }
-
-      &.dimension .innerFilter {
-        z-index: 4;
-      }
-
-      &.context,
-      &.dimension {
-        position: relative;
-
-        .arrowFilter {
-          &.rotate {
-            transform: rotate(180deg);
-            -webkit-transform: rotate(180deg);
-            -moz-transform: rotate(180deg);
-            -ms-transform: rotate(180deg);
-            -o-transform: rotate(180deg);
-          }
-          transition: transform 0.2s;
-          -webkit-transition: transform 0.2s;
-          -moz-transition: transform 0.2s;
-          -ms-transition: transform 0.2s;
-          -o-transition: transform 0.2s;
-        }
-
-        .innerFilter {
-          display: none;
-          position: absolute;
-          top: 30px;
-          left: 15px;
-          flex-direction: column;
-          width: 70%;
-          background-color: #3a3e44;
-          border: 2px solid gray;
-          border-top: 5px solid #1e7dd8;
-
-          .row {
-            padding-left: 0;
-          }
-        }
       }
     }
   }

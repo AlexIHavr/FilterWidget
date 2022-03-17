@@ -2,6 +2,8 @@ import classNames from 'classnames';
 import { useState } from 'react';
 import { getUniqueFilters } from '../../../../helpers/filterHelpers';
 
+import './filter.scss';
+
 const Filter = ({ name, filters, toggleSelectedFilter }) => {
   const [activeFilter, toggleFilter] = useState(false);
 
