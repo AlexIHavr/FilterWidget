@@ -4,16 +4,16 @@ import cars from '../../data/cars';
 
 let filters = [];
 
-cars.forEach(({ contexts, ...properties }) => {
-  for (let context in contexts) {
-    const dimensions = contexts[context];
+cars.forEach(({ parameters, ...properties }) => {
+  for (let parameter in parameters) {
+    const dimensions = parameters[parameter];
 
     for (let dimension in dimensions) {
       filters.push({
         id: v4(),
         ...properties,
         context: {
-          name: context,
+          name: parameter,
           selected: false,
         },
         dimension: {

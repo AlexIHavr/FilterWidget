@@ -1,8 +1,11 @@
 import React from 'react';
+import { useSelector } from 'react-redux';
 import { getUniqueFilters } from '../../../helpers/filterHelpers';
 import './content.scss';
 
-const Content = ({ filters }) => {
+const Content = () => {
+  const filters = useSelector(({ filterWidget }) => filterWidget.filters);
+
   return (
     <div className="content">
       <ul className="collection with-header">

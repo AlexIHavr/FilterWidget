@@ -2,7 +2,7 @@ export default [
   {
     name: 'BMW',
     brand: 'M5',
-    contexts: {
+    parameters: {
       engine: {
         weight: 10,
         volume: 3,
@@ -22,7 +22,7 @@ export default [
   {
     name: 'Tesla',
     brand: 'Model S',
-    contexts: {
+    parameters: {
       engine: {
         weight: 25,
         volume: 2,

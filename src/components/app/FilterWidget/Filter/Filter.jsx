@@ -1,14 +1,30 @@
-import React from 'react';
+import React, { useCallback } from 'react';
 import classNames from 'classnames';
 import { useState } from 'react';
 import { filterBySearchType, getUniqueFilters } from '../../../../helpers/filterHelpers';
 
 import './filter.scss';
+import { useDispatch } from 'react-redux';
 
 const Filter = ({ name, filters, toggleSelectedFilter }) => {
+  const dispatch = useDispatch();
+
   const [activeFilter, toggleFilter] = useState(false);
 
   const uniqueFilters = getUniqueFilters(filters, name);
+
+  const onFilterChanged = useCallback(
+    (filter) => {
+      dispatch(
+        toggleSelectedFilter({
+          context: filter.context.name,
+          dimension: filter.dimension.name,
+        })
+      );
+      filterBySearchType();
+    },
+    [toggleSelectedFilter, filterBySearchType]
+  );
 
   return (
     <div className={classNames(name, 'row')}>
@@ -39,13 +55,7 @@ const Filter = ({ name, filters, toggleSelectedFilter }) => {
                 <input
                   type="checkbox"
                   className="filled-in"
-                  onChange={() => {
-                    toggleSelectedFilter({
-                      context: filter.context.name,
-                      dimension: filter.dimension.name,
-                    });
-                    filterBySearchType();
-                  }}
+                  onChange={() => onFilterChanged(filter)}
                   checked={filter[name].selected}
                 />
                 <span>{filter[name].name}</span>

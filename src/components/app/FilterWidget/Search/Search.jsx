@@ -4,14 +4,25 @@ import { useCallback, useState } from 'react';
 import { SEARCH_TYPES } from './constants';
 import './search.scss';
 import { filterBySearchType } from '../../../../helpers/filterHelpers';
+import { useDispatch, useSelector } from 'react-redux';
+import {
+  setSearchString,
+  setSearchType,
+  toggleAlphabetSort,
+} from '../../../../redux/FilterWidget/actions';
 
-const Search = ({ state, toggleAlphabetSort, setSearchString, setSearchType }) => {
+const Search = () => {
+  const dispatch = useDispatch();
+
+  const searchType = useSelector(({ filterWidget }) => filterWidget.searchType);
+  const alphabetSort = useSelector(({ filterWidget }) => filterWidget.alphabetSort);
+
   const [selectSearchTypes, setSelectSearchTypes] = useState(false);
 
   const setSearchTypeOnClick = useCallback(
     (type) => {
       setSelectSearchTypes(false);
-      setSearchType(type);
+      dispatch(setSearchType(type));
       filterBySearchType();
     },
     [setSelectSearchTypes]
@@ -20,15 +31,15 @@ const Search = ({ state, toggleAlphabetSort, setSearchString, setSearchType }) =
   const getSelectSearchTypes = useCallback(() => {
     return !selectSearchTypes ? (
       <div
-        className={classNames('clickable', state.searchType)}
+        className={classNames('clickable', searchType)}
         onClick={() => setSelectSearchTypes(true)}
       >
-        {SEARCH_TYPES.find(({ type }) => type === state.searchType).symbol}
+        {SEARCH_TYPES.find(({ type }) => type === searchType).symbol}
       </div>
     ) : (
       [
-        SEARCH_TYPES.find(({ type }) => type === state.searchType),
-        ...SEARCH_TYPES.filter(({ type }) => type !== state.searchType),
+        SEARCH_TYPES.find(({ type }) => type === searchType),
+        ...SEARCH_TYPES.filter(({ type }) => type !== searchType),
       ].map(({ type, symbol }) => (
         <div
           key={type}
@@ -41,6 +52,19 @@ const Search = ({ state, toggleAlphabetSort, setSearchString, setSearchType }) =
     );
   }, [selectSearchTypes]);
 
+  const searchOnChange = useCallback(
+    (e) => {
+      dispatch(setSearchString(e.target.value.trim()));
+      filterBySearchType();
+    },
+    [setSearchString, filterBySearchType]
+  );
+
+  const toggleAlphabetSortOnClick = useCallback(
+    () => dispatch(toggleAlphabetSort(!alphabetSort)),
+    [alphabetSort]
+  );
+
   return (
     <div className="search row">
       <div className="row">
@@ -49,21 +73,14 @@ const Search = ({ state, toggleAlphabetSort, setSearchString, setSearchType }) =
             <button className="btn" type="submit">
               <i className="material-icons clickable">search</i>
             </button>
-            <input
-              className="searchString"
-              type="text"
-              onChange={(e) => {
-                setSearchString(e.target.value.trim());
-                filterBySearchType();
-              }}
-            />
+            <input className="searchString" type="text" onChange={searchOnChange} />
           </form>
         </div>
       </div>
       <div className="row sorts">
         <div className="col matches">{getSelectSearchTypes()}</div>
         <div className="col alphabet">
-          <span className="clickable" onClick={() => toggleAlphabetSort(!state.alphabetSort)}>
+          <span className="clickable" onClick={toggleAlphabetSortOnClick}>
             A-Z
           </span>
         </div>

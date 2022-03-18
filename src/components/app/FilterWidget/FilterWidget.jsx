@@ -5,18 +5,15 @@ import Filter from './Filter/Filter';
 import './filterWidget.scss';
 import Results from './Results/Results';
 import Search from './Search/Search';
-
-const FilterWidget = ({
-  state,
-  toggleAlphabetSort,
+import { useSelector } from 'react-redux';
+import {
   toggleSelectedContext,
   toggleSelectedDimension,
-  toggleSelectedValue,
-  setSelectedAllValues,
-  setSearchString,
-  setSearchType,
-}) => {
+} from '../../../redux/FilterWidget/actions';
+
+const FilterWidget = () => {
   const [activeFilterWidget, toggleFilterWidget] = useState(false);
+  const filters = useSelector(({ filterWidget }) => filterWidget.filters);
 
   return (
     <div className="filterWidgetWrapper card blue">
@@ -43,25 +40,16 @@ const FilterWidget = ({
         </div>
         <Filter
           name="context"
-          filters={state.filters}
+          filters={filters}
           toggleSelectedFilter={toggleSelectedContext}
         ></Filter>
         <Filter
           name="dimension"
-          filters={state.filters.filter(({ context: { selected } }) => selected)}
+          filters={filters.filter(({ context: { selected } }) => selected)}
           toggleSelectedFilter={toggleSelectedDimension}
         ></Filter>
-        <Search
-          state={state}
-          toggleAlphabetSort={toggleAlphabetSort}
-          setSearchString={setSearchString}
-          setSearchType={setSearchType}
-        />
-        <Results
-          state={state}
-          toggleSelectedValue={toggleSelectedValue}
-          setSelectedAllValues={setSelectedAllValues}
-        />
+        <Search />
+        <Results />
       </div>
     </div>
   );
