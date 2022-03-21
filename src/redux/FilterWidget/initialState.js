@@ -12,19 +12,9 @@ cars.forEach(({ parameters, ...properties }) => {
       filters.push({
         id: v4(),
         ...properties,
-        context: {
-          name: parameter,
-          selected: false,
-        },
-        dimension: {
-          name: dimension,
-          selected: false,
-        },
-        value: {
-          name: dimensions[dimension],
-          selected: false,
-          match: true,
-        },
+        context: parameter,
+        dimension: dimension,
+        value: dimensions[dimension],
       });
     }
   }
@@ -32,6 +22,10 @@ cars.forEach(({ parameters, ...properties }) => {
 
 export default {
   filters,
+  selectedContexts: [],
+  selectedDimensions: [],
+  selectedValues: [],
+  matchedValues: [],
   alphabetSort: false,
   searchType: EXACT,
   searchString: '',

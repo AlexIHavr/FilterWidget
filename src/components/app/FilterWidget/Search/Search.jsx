@@ -4,18 +4,18 @@ import { useCallback, useState } from 'react';
 import { SEARCH_TYPES } from './constants';
 import './search.scss';
 import { filterBySearchType } from '../../../../helpers/filterHelpers';
-import { useDispatch, useSelector } from 'react-redux';
+import { useDispatch } from 'react-redux';
 import {
   setSearchString,
   setSearchType,
   toggleAlphabetSort,
 } from '../../../../redux/FilterWidget/actions';
+import { useFilterWidget } from '../../../../helpers/customHooks';
 
 const Search = () => {
   const dispatch = useDispatch();
 
-  const searchType = useSelector(({ filterWidget }) => filterWidget.searchType);
-  const alphabetSort = useSelector(({ filterWidget }) => filterWidget.alphabetSort);
+  const { searchType, alphabetSort } = useFilterWidget();
 
   const [selectSearchTypes, setSelectSearchTypes] = useState(false);
 

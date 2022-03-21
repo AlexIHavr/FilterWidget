@@ -1,9 +1,8 @@
 .results {
-  display: none;
+  display: none !important;
   max-height: 400px;
   overflow-y: auto;
   .filterWidgetWrapper .filterWidget & .row {
-    display: none;
     &:not(:last-child) {
       margin-bottom: 15px !important;
     }

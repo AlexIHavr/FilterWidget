@@ -1,24 +1,29 @@
-import React, { useCallback } from 'react';
+import React, { useCallback, useEffect } from 'react';
 import classNames from 'classnames';
 import { useState } from 'react';
 import { filterBySearchType, getUniqueFilters } from '../../../../helpers/filterHelpers';
 
 import './filter.scss';
 import { useDispatch } from 'react-redux';
+import { toggleSelectedFilter } from '../../../../redux/FilterWidget/actions';
+import { useFilterWidget } from '../../../../helpers/customHooks';
 
-const Filter = ({ name, filters, toggleSelectedFilter }) => {
+const Filter = ({ name, filters, selectedFiltersName }) => {
+  const selectedFilters = useFilterWidget()[selectedFiltersName];
   const dispatch = useDispatch();
 
-  const [activeFilter, toggleFilter] = useState(false);
+  const [activeFilter, setActiveFilter] = useState(false);
 
   const uniqueFilters = getUniqueFilters(filters, name);
+  const uniqueSelectedFilters = getUniqueFilters(selectedFilters, name);
 
   const onFilterChanged = useCallback(
-    (filter) => {
+    (filterValue) => {
       dispatch(
         toggleSelectedFilter({
-          context: filter.context.name,
-          dimension: filter.dimension.name,
+          filterName: name,
+          selectedFiltersName,
+          filterValue,
         })
       );
       filterBySearchType();
@@ -30,9 +35,9 @@ const Filter = ({ name, filters, toggleSelectedFilter }) => {
     <div className={classNames(name, 'row')}>
       <div
         className={classNames('col clickable arrowFilter', {
-          rotate: activeFilter,
+          rotate: activeFilter && uniqueFilters.length,
         })}
-        onClick={() => uniqueFilters.length && toggleFilter(!activeFilter)}
+        onClick={() => uniqueFilters.length && setActiveFilter(!activeFilter)}
       >
         <i className="material-icons">keyboard_arrow_down</i>
       </div>
@@ -41,13 +46,14 @@ const Filter = ({ name, filters, toggleSelectedFilter }) => {
       </div>
       <div className="selectedFilter col">
         <span>
-          {uniqueFilters
-            .filter((filter) => filter[name].selected)
-            .map((filter) => filter[name].name)
-            .join(', ')}
+          {uniqueFilters.length
+            ? uniqueSelectedFilters.map((filter) => filter[name]).join(', ')
+            : ''}
         </span>
       </div>
-      <div className={classNames('innerFilter col', { active: activeFilter })}>
+      <div
+        className={classNames('innerFilter col', { active: activeFilter && uniqueFilters.length })}
+      >
         {uniqueFilters.map((filter) => (
           <div key={filter.id} className="row">
             <div className="col clickable">
@@ -55,10 +61,10 @@ const Filter = ({ name, filters, toggleSelectedFilter }) => {
                 <input
                   type="checkbox"
                   className="filled-in"
-                  onChange={() => onFilterChanged(filter)}
-                  checked={filter[name].selected}
+                  onChange={() => onFilterChanged(filter[name])}
+                  checked={selectedFilters.some(({ id }) => id === filter.id)}
                 />
-                <span>{filter[name].name}</span>
+                <span>{filter[name]}</span>
               </label>
             </div>
           </div>

@@ -2,52 +2,51 @@ import { EXACT, PARTIAL, STARTS_WITH } from '../components/app/FilterWidget/Sear
 import { setMatchValues } from '../redux/FilterWidget/actions';
 import store from '../redux/store';
 
-export const getUniqueFilters = (filters, property) => {
+export const getUniqueFilters = (filters, filterName) => {
   if (!filters.length) return filters;
 
   return filters.reduce((uniques, filter) => {
-    if (
-      !uniques.length ||
-      uniques.every((unique) =>
-        property ? unique[property].name !== filter[property].name : unique.name !== filter.name
-      )
-    )
+    if (!uniques.length || uniques.every((unique) => unique[filterName] !== filter[filterName]))
       uniques.push(filter);
 
     return uniques;
   }, []);
 };
 
-export const filterBySearchType = () => {
-  const state = store.getState().filterWidget;
+export const getVisibleMatchedValues = () => {
+  const { matchedValues, selectedContexts, selectedDimensions } = store.getState().filterWidget;
 
-  const filterValues = state.filters.filter(
-    ({ context, dimension }) => context.selected && dimension.selected
+  return matchedValues.filter(
+    (filter) =>
+      selectedContexts.some(({ id }) => filter.id === id) &&
+      selectedDimensions.some(({ id }) => filter.id === id)
   );
+};
 
-  if (!filterValues.length) return;
+export const filterBySearchType = () => {
+  const { searchString, searchType, selectedDimensions } = store.getState().filterWidget;
 
-  if (!state.searchString) return store.dispatch(setMatchValues(filterValues));
+  if (!selectedDimensions.length) return;
 
-  switch (state.searchType) {
+  if (!searchString) return store.dispatch(setMatchValues(selectedDimensions));
+
+  switch (searchType) {
     case EXACT:
       store.dispatch(
-        setMatchValues(
-          filterValues.filter(({ value: { name } }) => String(name) === state.searchString)
-        )
+        setMatchValues(selectedDimensions.filter(({ value }) => String(value) === searchString))
       );
       break;
     case PARTIAL:
       store.dispatch(
         setMatchValues(
-          filterValues.filter(({ value: { name } }) => String(name).includes(state.searchString))
+          selectedDimensions.filter(({ value }) => String(value).includes(searchString))
         )
       );
       break;
     case STARTS_WITH:
       store.dispatch(
         setMatchValues(
-          filterValues.filter(({ value: { name } }) => String(name).startsWith(state.searchString))
+          selectedDimensions.filter(({ value }) => String(value).startsWith(searchString))
         )
       );
       break;

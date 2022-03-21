@@ -1,42 +1,39 @@
 import React from 'react';
 import classNames from 'classnames';
 import { useEffect, useState } from 'react';
-import { getUniqueFilters } from '../../../../helpers/filterHelpers';
+import { getUniqueFilters, getVisibleMatchedValues } from '../../../../helpers/filterHelpers';
 
 import './results.scss';
-import { useDispatch, useSelector } from 'react-redux';
-import { setSelectedAllValues, toggleSelectedValue } from '../../../../redux/FilterWidget/actions';
+import { useDispatch } from 'react-redux';
+import { setSelectedAllValues, toggleSelectedFilter } from '../../../../redux/FilterWidget/actions';
+import { useFilterWidget } from '../../../../helpers/customHooks';
 
 const Results = () => {
   const dispatch = useDispatch();
 
-  const filters = useSelector(({ filterWidget }) => filterWidget.filters);
-  const alphabetSort = useSelector(({ filterWidget }) => filterWidget.alphabetSort);
+  const { selectedValues, alphabetSort } = useFilterWidget();
 
   const [selectAll, setSelectAll] = useState(false);
 
-  let uniqueSelectedValues = getUniqueFilters(
-    filters.filter(({ context, dimension }) => context.selected && dimension.selected),
-    'value'
-  );
+  let uniqueMatchedValues = getUniqueFilters(getVisibleMatchedValues(), 'value');
 
   if (alphabetSort) {
-    uniqueSelectedValues = uniqueSelectedValues.sort((value, nextValue) => {
-      if (value.value.name < nextValue.value.name) return -1;
+    uniqueMatchedValues = uniqueMatchedValues.sort((value, nextValue) => {
+      if (value.value < nextValue.value) return -1;
 
-      if (value.value.name > nextValue.value.name) return 1;
+      if (value.value > nextValue.value) return 1;
 
       return 0;
     });
   }
 
   useEffect(() => {
-    if (uniqueSelectedValues.length) dispatch(setSelectedAllValues(selectAll));
+    if (uniqueMatchedValues.length) dispatch(setSelectedAllValues(selectAll));
   }, [selectAll]);
 
   return (
-    <div className={classNames('results row', { active: uniqueSelectedValues.length })}>
-      <div className="row activeFlex">
+    <div className={classNames('results row', { active: uniqueMatchedValues.length })}>
+      <div className="row">
         <div className="col clickable">
           <label>
             <input
@@ -49,8 +46,8 @@ const Results = () => {
         </div>
       </div>
 
-      {uniqueSelectedValues.map(({ id, value, context, dimension }) => (
-        <div key={id} className={classNames('row', { activeFlex: value.match })}>
+      {uniqueMatchedValues.map(({ id, value }) => (
+        <div key={id} className="row">
           <div className="col clickable">
             <label>
               <input
@@ -58,16 +55,16 @@ const Results = () => {
                 className="filled-in"
                 onChange={() =>
                   dispatch(
-                    toggleSelectedValue({
-                      context: context.name,
-                      dimension: dimension.name,
-                      value: value.name,
+                    toggleSelectedFilter({
+                      filterName: 'value',
+                      selectedFiltersName: 'selectedValues',
+                      filterValue: value,
                     })
                   )
                 }
-                checked={value.selected}
+                checked={selectedValues.some((filter) => id === filter.id)}
               />
-              <span>{value.name}</span>
+              <span>{value}</span>
             </label>
           </div>
         </div>

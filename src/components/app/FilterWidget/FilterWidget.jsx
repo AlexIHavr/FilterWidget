@@ -5,15 +5,12 @@ import Filter from './Filter/Filter';
 import './filterWidget.scss';
 import Results from './Results/Results';
 import Search from './Search/Search';
-import { useSelector } from 'react-redux';
-import {
-  toggleSelectedContext,
-  toggleSelectedDimension,
-} from '../../../redux/FilterWidget/actions';
+import { useFilterWidget } from '../../../helpers/customHooks';
 
 const FilterWidget = () => {
+  const { filters, selectedContexts } = useFilterWidget();
+
   const [activeFilterWidget, toggleFilterWidget] = useState(false);
-  const filters = useSelector(({ filterWidget }) => filterWidget.filters);
 
   return (
     <div className="filterWidgetWrapper card blue">
@@ -38,15 +35,11 @@ const FilterWidget = () => {
             <span>FILTERS</span>
           </div>
         </div>
-        <Filter
-          name="context"
-          filters={filters}
-          toggleSelectedFilter={toggleSelectedContext}
-        ></Filter>
+        <Filter name="context" selectedFiltersName="selectedContexts" filters={filters}></Filter>
         <Filter
           name="dimension"
-          filters={filters.filter(({ context: { selected } }) => selected)}
-          toggleSelectedFilter={toggleSelectedDimension}
+          selectedFiltersName="selectedDimensions"
+          filters={selectedContexts}
         ></Filter>
         <Search />
         <Results />
