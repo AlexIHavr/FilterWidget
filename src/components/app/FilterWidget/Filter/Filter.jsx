@@ -31,6 +31,13 @@ const Filter = ({ name, filters, selectedFiltersName }) => {
     [toggleSelectedFilter, filterBySearchType]
   );
 
+  useEffect(() => {
+    window.onclick = (e) => {
+      if (activeFilter && !e.path.some((elem) => elem.classList?.contains(name)))
+        setActiveFilter(false);
+    };
+  }, [activeFilter]);
+
   return (
     <div className={classNames(name, 'row')}>
       <div
@@ -46,9 +53,10 @@ const Filter = ({ name, filters, selectedFiltersName }) => {
       </div>
       <div className="selectedFilter col">
         <span>
-          {uniqueFilters.length
-            ? uniqueSelectedFilters.map((filter) => filter[name]).join(', ')
-            : ''}
+          {uniqueSelectedFilters
+            .filter((filter) => uniqueFilters.some(({ id }) => id === filter.id))
+            .map((filter) => filter[name])
+            .join(', ')}
         </span>
       </div>
       <div
