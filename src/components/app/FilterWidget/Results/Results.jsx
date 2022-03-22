@@ -1,11 +1,7 @@
 import React, { useCallback } from 'react';
 import classNames from 'classnames';
 import { useState } from 'react';
-import {
-  getAlphabetSortedFilters,
-  getUniqueFilters,
-  getVisibleMatchedValues,
-} from '../../../../helpers/filterHelpers';
+import { getAlphabetSortedFilters } from '../../../../helpers/filterHelpers';
 
 import './results.scss';
 import { useDispatch } from 'react-redux';
@@ -15,17 +11,16 @@ import { useFilterWidget } from '../../../../helpers/customHooks';
 const Results = () => {
   const dispatch = useDispatch();
 
-  const { selectedValues, alphabetSort } = useFilterWidget();
+  const { selectedValues, alphabetSort, matchedValues } = useFilterWidget();
 
   const [selectAll, setSelectAll] = useState(false);
 
   const toggleSelectedFilterOnChange = useCallback(
-    (value) =>
+    (id) =>
       dispatch(
         toggleSelectedFilter({
-          filterName: 'value',
+          id,
           selectedFiltersName: 'selectedValues',
-          filterValue: value,
         })
       ),
     [toggleSelectedFilter]
@@ -36,12 +31,8 @@ const Results = () => {
     setSelectAll(!selectAll);
   }, [setSelectedAllValues, selectAll]);
 
-  let uniqueMatchedValues = getUniqueFilters(getVisibleMatchedValues(), 'value');
-
-  if (alphabetSort) uniqueMatchedValues = getAlphabetSortedFilters(uniqueMatchedValues);
-
   return (
-    <div className={classNames('results row', { active: uniqueMatchedValues.length })}>
+    <div className={classNames('results row', { active: matchedValues.length })}>
       <div className="row">
         <div className="col clickable">
           <label>
@@ -51,21 +42,25 @@ const Results = () => {
         </div>
       </div>
 
-      {uniqueMatchedValues.map(({ id, value }) => (
-        <div key={id} className="row">
-          <div className="col clickable">
-            <label>
-              <input
-                type="checkbox"
-                className="filled-in"
-                onChange={() => toggleSelectedFilterOnChange(value)}
-                checked={selectedValues.some((filter) => id === filter.id)}
-              />
-              <span>{value}</span>
-            </label>
+      {(alphabetSort ? getAlphabetSortedFilters(matchedValues) : matchedValues).map(
+        ({ id, context, dimension, value }) => (
+          <div key={id} className="row">
+            <div className="col clickable">
+              <label>
+                <input
+                  type="checkbox"
+                  className="filled-in"
+                  onChange={() => toggleSelectedFilterOnChange(id)}
+                  checked={selectedValues.some((filter) => id === filter.id)}
+                />
+                <span>
+                  {value} ({context} - {dimension})
+                </span>
+              </label>
+            </div>
           </div>
-        </div>
-      ))}
+        )
+      )}
     </div>
   );
 };

@@ -17,6 +17,10 @@ export default [
         fullTank: 200,
         type: 'A92',
       },
+      accumulator: {
+        power: 300,
+        volume: 500,
+      },
     },
   },
   {

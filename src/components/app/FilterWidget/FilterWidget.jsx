@@ -29,11 +29,13 @@ const FilterWidget = () => {
             <span>FILTERS</span>
           </div>
         </div>
-        <Filter name="context" selectedFiltersName="selectedContexts" filters={filters}></Filter>
+        <Filter name="context" filters={filters}></Filter>
         <Filter
+          parentName="context"
           name="dimension"
-          selectedFiltersName="selectedDimensions"
-          filters={selectedContexts}
+          filters={filters.filter((filter) =>
+            selectedContexts.some(({ context }) => filter.context === context)
+          )}
         ></Filter>
         <Search />
         <Results />

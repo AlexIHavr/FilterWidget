@@ -14,16 +14,11 @@ const filterWidgetReducer = (state = initialState, action) => {
       return { ...state, alphabetSort: !state.alphabetSort };
 
     case TOGGLE_SELECTED_FILTER:
-      const { filterName, filterValue, selectedFiltersName } = action.payload;
+      const { id, selectedFiltersName } = action.payload;
 
-      const selectedFilters = !state[selectedFiltersName].some(
-        (filter) => filter[filterName] === filterValue
-      )
-        ? [
-            ...state[selectedFiltersName],
-            ...state.filters.filter((filter) => filter[filterName] === filterValue),
-          ]
-        : state[selectedFiltersName].filter((filter) => filter[filterName] !== filterValue);
+      const selectedFilters = !state[selectedFiltersName].some((filter) => filter.id === id)
+        ? [...state[selectedFiltersName], ...state.filters.filter((filter) => filter.id === id)]
+        : state[selectedFiltersName].filter((filter) => filter.id !== id);
 
       return {
         ...state,
@@ -31,15 +26,28 @@ const filterWidgetReducer = (state = initialState, action) => {
       };
 
     case SET_SELECTED_ALL_VALUES:
+      const selectedAllValues = state.filters.filter((filter) =>
+        state.matchedValues.some(({ id }) => id === filter.id)
+      );
+
       return {
         ...state,
-        selectedValues: action.payload ? [...state.selectedDimensions] : [],
+        selectedValues: action.payload ? selectedAllValues : [],
       };
 
     case SET_MATCH_VALUES:
+      const matchedValues = action.payload.reduce(
+        (filters, filter) =>
+          state.selectedContexts.some(({ context }) => context === filter.context) &&
+          (!filters.length || !filters.some(({ value }) => value === filter.value))
+            ? [...filters, filter]
+            : filters,
+        []
+      );
+
       return {
         ...state,
-        matchedValues: action.payload,
+        matchedValues,
       };
 
     case SET_SEARCH_STRING:

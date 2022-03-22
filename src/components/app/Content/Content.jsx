@@ -1,6 +1,6 @@
 import React from 'react';
 import { useFilterWidget } from '../../../helpers/customHooks';
-import { getUniqueFilters, getVisibleMatchedValues } from '../../../helpers/filterHelpers';
+import { getUniqueFilters } from '../../../helpers/filterHelpers';
 import './content.scss';
 
 const Content = () => {
@@ -12,12 +12,7 @@ const Content = () => {
         <li className="collection-header">
           <h4>Cars</h4>
         </li>
-        {getUniqueFilters(
-          selectedValues.filter((filter) =>
-            getVisibleMatchedValues().some(({ id }) => id === filter.id)
-          ),
-          'name'
-        ).map(({ id, name, brand }, index) => (
+        {getUniqueFilters(selectedValues, 'name').map(({ id, name, brand }, index) => (
           <li key={id} className="collection-item">
             {`${index + 1}. ${name} ${brand}`}
           </li>
