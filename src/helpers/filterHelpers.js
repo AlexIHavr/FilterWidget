@@ -13,6 +13,16 @@ export const getUniqueFilters = (filters, filterName) => {
   }, []);
 };
 
+export const getAlphabetSortedFilters = (filters) => {
+  return filters.sort((value, nextValue) => {
+    if (value.value < nextValue.value) return -1;
+
+    if (value.value > nextValue.value) return 1;
+
+    return 0;
+  });
+};
+
 export const getVisibleMatchedValues = () => {
   const { matchedValues, selectedContexts, selectedDimensions } = store.getState().filterWidget;
 
@@ -24,27 +34,30 @@ export const getVisibleMatchedValues = () => {
 };
 
 export const filterBySearchType = () => {
-  const { searchString, searchType, selectedDimensions } = store.getState().filterWidget;
+  const { dispatch, getState } = store;
+
+  const { searchString, searchType, selectedDimensions } = getState().filterWidget;
 
   if (!selectedDimensions.length) return;
 
-  if (!searchString) return store.dispatch(setMatchValues(selectedDimensions));
+  if (!searchString) return dispatch(setMatchValues(selectedDimensions));
 
   switch (searchType) {
+    default:
     case EXACT:
-      store.dispatch(
+      dispatch(
         setMatchValues(selectedDimensions.filter(({ value }) => String(value) === searchString))
       );
       break;
     case PARTIAL:
-      store.dispatch(
+      dispatch(
         setMatchValues(
           selectedDimensions.filter(({ value }) => String(value).includes(searchString))
         )
       );
       break;
     case STARTS_WITH:
-      store.dispatch(
+      dispatch(
         setMatchValues(
           selectedDimensions.filter(({ value }) => String(value).startsWith(searchString))
         )

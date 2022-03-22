@@ -16,17 +16,11 @@ const FilterWidget = () => {
     <div className="filterWidgetWrapper card blue">
       <a
         className="filterWidgetBtn btn-floating btn-large waves-effect waves-light blue darken-4"
-        onClick={() => {
-          toggleFilterWidget(!activeFilterWidget);
-        }}
+        onClick={() => toggleFilterWidget(!activeFilterWidget)}
       >
         <i className="material-icons">filter_list</i>
       </a>
-      <div
-        className={classNames('filterWidget card', {
-          active: activeFilterWidget,
-        })}
-      >
+      <div className={classNames('filterWidget card', { active: activeFilterWidget })}>
         <div className="filterHeader row">
           <div className="col">
             <i className="material-icons grey-text">filter_list</i>

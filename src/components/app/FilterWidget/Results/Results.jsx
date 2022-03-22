@@ -1,7 +1,11 @@
-import React from 'react';
+import React, { useCallback } from 'react';
 import classNames from 'classnames';
-import { useEffect, useState } from 'react';
-import { getUniqueFilters, getVisibleMatchedValues } from '../../../../helpers/filterHelpers';
+import { useState } from 'react';
+import {
+  getAlphabetSortedFilters,
+  getUniqueFilters,
+  getVisibleMatchedValues,
+} from '../../../../helpers/filterHelpers';
 
 import './results.scss';
 import { useDispatch } from 'react-redux';
@@ -15,32 +19,33 @@ const Results = () => {
 
   const [selectAll, setSelectAll] = useState(false);
 
+  const toggleSelectedFilterOnChange = useCallback(
+    (value) =>
+      dispatch(
+        toggleSelectedFilter({
+          filterName: 'value',
+          selectedFiltersName: 'selectedValues',
+          filterValue: value,
+        })
+      ),
+    [toggleSelectedFilter]
+  );
+
+  const setSelectAllOnChange = useCallback(() => {
+    dispatch(setSelectedAllValues(!selectAll));
+    setSelectAll(!selectAll);
+  }, [setSelectedAllValues, selectAll]);
+
   let uniqueMatchedValues = getUniqueFilters(getVisibleMatchedValues(), 'value');
 
-  if (alphabetSort) {
-    uniqueMatchedValues = uniqueMatchedValues.sort((value, nextValue) => {
-      if (value.value < nextValue.value) return -1;
-
-      if (value.value > nextValue.value) return 1;
-
-      return 0;
-    });
-  }
-
-  useEffect(() => {
-    if (uniqueMatchedValues.length) dispatch(setSelectedAllValues(selectAll));
-  }, [selectAll]);
+  if (alphabetSort) uniqueMatchedValues = getAlphabetSortedFilters(uniqueMatchedValues);
 
   return (
     <div className={classNames('results row', { active: uniqueMatchedValues.length })}>
       <div className="row">
         <div className="col clickable">
           <label>
-            <input
-              type="checkbox"
-              className="filled-in"
-              onChange={() => setSelectAll(!selectAll)}
-            />
+            <input type="checkbox" className="filled-in" onChange={setSelectAllOnChange} />
             <span className="showAll">(All)</span>
           </label>
         </div>
@@ -53,15 +58,7 @@ const Results = () => {
               <input
                 type="checkbox"
                 className="filled-in"
-                onChange={() =>
-                  dispatch(
-                    toggleSelectedFilter({
-                      filterName: 'value',
-                      selectedFiltersName: 'selectedValues',
-                      filterValue: value,
-                    })
-                  )
-                }
+                onChange={() => toggleSelectedFilterOnChange(value)}
                 checked={selectedValues.some((filter) => id === filter.id)}
               />
               <span>{value}</span>

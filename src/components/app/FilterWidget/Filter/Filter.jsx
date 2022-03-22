@@ -31,6 +31,18 @@ const Filter = ({ name, filters, selectedFiltersName }) => {
     [toggleSelectedFilter, filterBySearchType]
   );
 
+  const setActiveFilterOnClick = useCallback(
+    () => uniqueFilters.length && setActiveFilter(!activeFilter),
+    [uniqueFilters, activeFilter]
+  );
+
+  const getUniqueSelectedFiltersString = () => {
+    return uniqueSelectedFilters
+      .filter((filter) => uniqueFilters.some(({ id }) => id === filter.id))
+      .map((filter) => filter[name])
+      .join(', ');
+  };
+
   useEffect(() => {
     window.onclick = (e) => {
       if (activeFilter && !e.path.some((elem) => elem.classList?.contains(name)))
@@ -44,7 +56,7 @@ const Filter = ({ name, filters, selectedFiltersName }) => {
         className={classNames('col clickable arrowFilter', {
           rotate: activeFilter && uniqueFilters.length,
         })}
-        onClick={() => uniqueFilters.length && setActiveFilter(!activeFilter)}
+        onClick={setActiveFilterOnClick}
       >
         <i className="material-icons">keyboard_arrow_down</i>
       </div>
@@ -52,12 +64,7 @@ const Filter = ({ name, filters, selectedFiltersName }) => {
         <span>{name.toUpperCase() + 'S'}</span>
       </div>
       <div className="selectedFilter col">
-        <span>
-          {uniqueSelectedFilters
-            .filter((filter) => uniqueFilters.some(({ id }) => id === filter.id))
-            .map((filter) => filter[name])
-            .join(', ')}
-        </span>
+        <span>{getUniqueSelectedFiltersString()}</span>
       </div>
       <div
         className={classNames('innerFilter col', { active: activeFilter && uniqueFilters.length })}
