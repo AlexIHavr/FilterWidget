@@ -43,4 +43,23 @@ export default [
       },
     },
   },
+  {
+    name: 'SuperCar',
+    brand: 'Model Volve',
+    parameters: {
+      brake: {
+        count: 2,
+        types: 'forward, back',
+      },
+      headlight: {
+        count: 6,
+        powerLight: 200,
+      },
+      wheels: {
+        count: 4,
+        size: 200,
+        diameter: 100,
+      },
+    },
+  },
 ];
