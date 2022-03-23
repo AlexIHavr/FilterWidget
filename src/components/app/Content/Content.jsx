@@ -1,10 +1,10 @@
 import React from 'react';
 import { useFilterWidget } from '../../../helpers/customHooks';
-import { getUniqueFilters } from '../../../helpers/filterHelpers';
+import { SELECTED_VALUES } from '../../../redux/filterWidget/constants';
 import './content.scss';
 
 const Content = () => {
-  const { selectedValues } = useFilterWidget();
+  const { [SELECTED_VALUES]: selectedValues, cars } = useFilterWidget();
 
   return (
     <div className="content">
@@ -12,11 +12,20 @@ const Content = () => {
         <li className="collection-header">
           <h4>Cars</h4>
         </li>
-        {getUniqueFilters(selectedValues, 'name').map(({ id, name, brand }, index) => (
-          <li key={id} className="collection-item">
-            {`${index + 1}. ${name} ${brand}`}
-          </li>
-        ))}
+        {cars
+          .filter(({ parameters }) =>
+            selectedValues.some(
+              ({ context, dimension, value }) =>
+                parameters[context] &&
+                parameters[context][dimension] &&
+                parameters[context][dimension] === value
+            )
+          )
+          .map(({ id, name, brand }, index) => (
+            <li key={id} className="collection-item">
+              {`${index + 1}. ${name} ${brand}`}
+            </li>
+          ))}
       </ul>
     </div>
   );

@@ -1,7 +1,6 @@
 import React from 'react';
 import classNames from 'classnames';
 import { useCallback, useState } from 'react';
-import { SEARCH_TYPES } from './constants';
 import './search.scss';
 import { filterBySearchType } from '../../../../helpers/filterHelpers';
 import { useDispatch } from 'react-redux';
@@ -9,8 +8,9 @@ import {
   setSearchString,
   setSearchType,
   toggleAlphabetSort,
-} from '../../../../redux/FilterWidget/actions';
+} from '../../../../redux/filterWidget/actions';
 import { useFilterWidget } from '../../../../helpers/customHooks';
+import { SEARCH_TYPES_OPTIONS } from '../../../../redux/filterWidget/constants';
 
 const Search = () => {
   const dispatch = useDispatch();
@@ -25,7 +25,7 @@ const Search = () => {
       dispatch(setSearchType(type));
       filterBySearchType();
     },
-    [setSelectSearchTypes]
+    [dispatch, setSelectSearchTypes]
   );
 
   const getSelectSearchTypes = useCallback(() => {
@@ -34,12 +34,12 @@ const Search = () => {
         className={classNames('clickable', searchType)}
         onClick={() => setSelectSearchTypes(true)}
       >
-        {SEARCH_TYPES.find(({ type }) => type === searchType).symbol}
+        {SEARCH_TYPES_OPTIONS.find(({ type }) => type === searchType).symbol}
       </div>
     ) : (
       [
-        SEARCH_TYPES.find(({ type }) => type === searchType),
-        ...SEARCH_TYPES.filter(({ type }) => type !== searchType),
+        SEARCH_TYPES_OPTIONS.find(({ type }) => type === searchType),
+        ...SEARCH_TYPES_OPTIONS.filter(({ type }) => type !== searchType),
       ].map(({ type, symbol }) => (
         <div
           key={type}
@@ -50,19 +50,19 @@ const Search = () => {
         </div>
       ))
     );
-  }, [selectSearchTypes]);
+  }, [setSearchTypeOnClick, searchType, selectSearchTypes]);
 
   const searchOnChange = useCallback(
     (e) => {
       dispatch(setSearchString(e.target.value.trim()));
       filterBySearchType();
     },
-    [setSearchString, filterBySearchType]
+    [dispatch]
   );
 
   const toggleAlphabetSortOnClick = useCallback(
     () => dispatch(toggleAlphabetSort(!alphabetSort)),
-    [alphabetSort]
+    [dispatch, alphabetSort]
   );
 
   return (

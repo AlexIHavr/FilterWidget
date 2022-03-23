@@ -1,5 +1,5 @@
 import { combineReducers, compose, createStore } from 'redux';
-import filterWidgetReducer from './FilterWidget/reducer';
+import filterWidgetReducer from './filterWidget/reducer';
 
 const rootReducer = combineReducers({ filterWidget: filterWidgetReducer });
 

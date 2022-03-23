@@ -1,14 +1,15 @@
 import React from 'react';
 import classNames from 'classnames';
 import { useState } from 'react';
-import Filter from './Filter/Filter';
+import Filter from './filter/Filter';
 import './filterWidget.scss';
-import Results from './Results/Results';
-import Search from './Search/Search';
+import Results from './results/Results';
+import Search from './search/Search';
 import { useFilterWidget } from '../../../helpers/customHooks';
+import { FILTER_TYPES, SELECTED_CONTEXTS } from '../../../redux/filterWidget/constants';
 
 const FilterWidget = () => {
-  const { filters, selectedContexts } = useFilterWidget();
+  const { filters, [SELECTED_CONTEXTS]: selectedContexts } = useFilterWidget();
 
   const [activeFilterWidget, toggleFilterWidget] = useState(false);
 
@@ -29,10 +30,9 @@ const FilterWidget = () => {
             <span>FILTERS</span>
           </div>
         </div>
-        <Filter name="context" filters={filters}></Filter>
+        <Filter filterType={FILTER_TYPES.context} filters={filters}></Filter>
         <Filter
-          parentName="context"
-          name="dimension"
+          filterType={FILTER_TYPES.dimension}
           filters={filters.filter((filter) =>
             selectedContexts.some(({ context }) => filter.context === context)
           )}

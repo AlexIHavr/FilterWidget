@@ -1,29 +1,18 @@
 import React, { useCallback, useEffect } from 'react';
 import classNames from 'classnames';
 import { useState } from 'react';
-import { filterBySearchType, getUniqueFilters } from '../../../../helpers/filterHelpers';
+import { getUniqueFilters } from '../../../../helpers/filterHelpers';
 
 import './filter.scss';
-import { useDispatch } from 'react-redux';
-import { toggleSelectedFilter } from '../../../../redux/FilterWidget/actions';
 import { useFilterWidget } from '../../../../helpers/customHooks';
+import InnerFilter from '../innerFilter/InnerFilter';
 
-const Filter = ({ parentName, name, filters }) => {
-  const selectedFiltersName = `selected${name[0].toUpperCase()}${name.slice(1)}s`;
-  const selectedFilters = useFilterWidget()[selectedFiltersName];
-  const dispatch = useDispatch();
+const Filter = ({ filterType: { name, selected, parent }, filters, setSelectedAllFilters }) => {
+  const { [selected]: selectedFilters } = useFilterWidget();
 
   const [activeFilter, setActiveFilter] = useState(false);
 
-  const uniqueFilters = getUniqueFilters(filters, name, parentName);
-
-  const onFilterChanged = useCallback(
-    (id) => {
-      dispatch(toggleSelectedFilter({ id, selectedFiltersName }));
-      filterBySearchType();
-    },
-    [toggleSelectedFilter, filterBySearchType]
-  );
+  const uniqueFilters = getUniqueFilters(filters, name, parent);
 
   const setActiveFilterOnClick = useCallback(
     () => uniqueFilters.length && setActiveFilter(!activeFilter),
@@ -42,7 +31,7 @@ const Filter = ({ parentName, name, filters }) => {
       if (activeFilter && !e.path.some((elem) => elem.classList?.contains(name)))
         setActiveFilter(false);
     };
-  }, [activeFilter]);
+  }, [activeFilter, name]);
 
   return (
     <div className={classNames(name, 'row')}>
@@ -60,27 +49,12 @@ const Filter = ({ parentName, name, filters }) => {
       <div className="selectedFilter col">
         <span>{getUniqueSelectedFiltersString()}</span>
       </div>
-      <div
-        className={classNames('innerFilter col', { active: activeFilter && uniqueFilters.length })}
-      >
-        {uniqueFilters.map((filter) => (
-          <div key={filter.id} className="row">
-            <div className="col clickable">
-              <label>
-                <input
-                  type="checkbox"
-                  className="filled-in"
-                  onChange={() => onFilterChanged(filter.id)}
-                  checked={selectedFilters.some(({ id }) => id === filter.id)}
-                />
-                <span>
-                  {filter[name]} {filter[name] !== filter.context ? `(${filter.context})` : ''}
-                </span>
-              </label>
-            </div>
-          </div>
-        ))}
-      </div>
+      <InnerFilter
+        filters={uniqueFilters}
+        filterType={{ name, selected }}
+        setSelectedAllFilters={setSelectedAllFilters}
+        activeFilter={activeFilter}
+      />
     </div>
   );
 };

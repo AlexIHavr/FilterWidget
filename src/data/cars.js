@@ -1,5 +1,6 @@
 export default [
   {
+    id: 1,
     name: 'BMW',
     brand: 'M5',
     parameters: {
@@ -24,6 +25,7 @@ export default [
     },
   },
   {
+    id: 2,
     name: 'Tesla',
     brand: 'Model S',
     parameters: {
@@ -44,6 +46,7 @@ export default [
     },
   },
   {
+    id: 3,
     name: 'SuperCar',
     brand: 'Model Volve',
     parameters: {

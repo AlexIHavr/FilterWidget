@@ -3,25 +3,6 @@
   margin: 0 !important;
   z-index: 1;
 
-  .results,
-  .innerFilter {
-    &::-webkit-scrollbar {
-      width: 10px;
-    }
-    &::-webkit-scrollbar-track {
-      background: #747c8a;
-      border-radius: 3px;
-      -webkit-border-radius: 3px;
-      -moz-border-radius: 3px;
-      -ms-border-radius: 3px;
-      -o-border-radius: 3px;
-    }
-    &::-webkit-scrollbar-thumb {
-      background-color: #3a3e44;
-      border-radius: 20px;
-    }
-  }
-
   input[type='checkbox'].filled-in {
     &:not(:checked) + span:not(.lever):after {
       background-color: #9fa1a5;
@@ -103,7 +84,7 @@
         text-shadow: 1px 1px 0px black;
       }
 
-      &.results,
+      &.valueInnerFilter,
       &.search {
         display: block;
 

@@ -1,5 +1,5 @@
-import { EXACT, PARTIAL, STARTS_WITH } from '../components/app/FilterWidget/Search/constants';
-import { setMatchValues } from '../redux/FilterWidget/actions';
+import { setMatchValues } from '../redux/filterWidget/actions';
+import { SEARCH_TYPES, SELECTED_DIMENSIONS } from '../redux/filterWidget/constants';
 import store from '../redux/store';
 
 export const getUniqueFilters = (filters, filterName, extraFilterName) => {
@@ -34,7 +34,12 @@ export const getAlphabetSortedFilters = (filters) => {
 export const filterBySearchType = () => {
   const { dispatch, getState } = store;
 
-  const { filters, searchString, searchType, selectedDimensions } = getState().filterWidget;
+  const {
+    filters,
+    searchString,
+    searchType,
+    [SELECTED_DIMENSIONS]: selectedDimensions,
+  } = getState().filterWidget;
 
   const filtersValues = filters.filter((filter) =>
     selectedDimensions.some(
@@ -46,15 +51,15 @@ export const filterBySearchType = () => {
 
   switch (searchType) {
     default:
-    case EXACT:
+    case SEARCH_TYPES.exact:
       dispatch(setMatchValues(filtersValues.filter(({ value }) => String(value) === searchString)));
       break;
-    case PARTIAL:
+    case SEARCH_TYPES.partial:
       dispatch(
         setMatchValues(filtersValues.filter(({ value }) => String(value).includes(searchString)))
       );
       break;
-    case STARTS_WITH:
+    case SEARCH_TYPES.startsWith:
       dispatch(
         setMatchValues(filtersValues.filter(({ value }) => String(value).startsWith(searchString)))
       );

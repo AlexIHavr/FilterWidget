@@ -1,9 +1,10 @@
+import { SELECTED_CONTEXTS } from './constants';
 import initialState from './initialState';
 import {
   SET_MATCH_VALUES,
   SET_SEARCH_STRING,
   SET_SEARCH_TYPE,
-  SET_SELECTED_ALL_VALUES,
+  SET_SELECTED_ALL_FILTERS,
   TOGGLE_ALPHABET_SORT,
   TOGGLE_SELECTED_FILTER,
 } from './types';
@@ -14,32 +15,34 @@ const filterWidgetReducer = (state = initialState, action) => {
       return { ...state, alphabetSort: !state.alphabetSort };
 
     case TOGGLE_SELECTED_FILTER:
-      const { id, selectedFiltersName } = action.payload;
+      const { id, selected } = action.payload;
 
-      const selectedFilters = !state[selectedFiltersName].some((filter) => filter.id === id)
-        ? [...state[selectedFiltersName], ...state.filters.filter((filter) => filter.id === id)]
-        : state[selectedFiltersName].filter((filter) => filter.id !== id);
+      const selectedFilters = !state[selected].some((filter) => filter.id === id)
+        ? [...state[selected], ...state.filters.filter((filter) => filter.id === id)]
+        : state[selected].filter((filter) => filter.id !== id);
 
       return {
         ...state,
-        [selectedFiltersName]: selectedFilters,
+        [selected]: selectedFilters,
       };
 
-    case SET_SELECTED_ALL_VALUES:
-      const selectedAllValues = state.filters.filter((filter) =>
-        state.matchedValues.some(({ id }) => id === filter.id)
-      );
-
+    case SET_SELECTED_ALL_FILTERS:
       return {
         ...state,
-        selectedValues: action.payload ? selectedAllValues : [],
+        [action.payload.selected]: action.payload.selectAll ? action.payload.filters : [],
       };
 
     case SET_MATCH_VALUES:
       const matchedValues = action.payload.reduce(
         (filters, filter) =>
-          state.selectedContexts.some(({ context }) => context === filter.context) &&
-          (!filters.length || !filters.some(({ value }) => value === filter.value))
+          state[SELECTED_CONTEXTS].some(({ context }) => context === filter.context) &&
+          (!filters.length ||
+            !filters.some(
+              ({ context, dimension, value }) =>
+                context === filter.context &&
+                dimension === filter.dimension &&
+                value === filter.value
+            ))
             ? [...filters, filter]
             : filters,
         []
