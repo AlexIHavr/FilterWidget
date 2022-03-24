@@ -20,12 +20,17 @@ const Filter = ({ filterType, filters, setSelectedAllFilters }) => {
     [uniqueFilters, activeFilter]
   );
 
-  const getUniqueSelectedFiltersString = () => {
+  const getUniqueSelectedFiltersString = useCallback(() => {
     return selectedFilters
       .filter((filter) => uniqueFilters.some(({ id }) => id === filter.id))
-      .map((filter) => filter[name])
-      .join(', ');
-  };
+      .reduce(
+        (filterString, filter, index, filters) =>
+          `${filterString} ${filter[name]}${
+            filter[name] !== filter.context ? `(${filter.context})` : ''
+          }${index !== filters.length - 1 ? ',' : ''}`,
+        ''
+      );
+  }, [selectedFilters, uniqueFilters, name]);
 
   useEffect(() => {
     window.onclick = (e) => {
