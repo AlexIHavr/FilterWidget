@@ -30,16 +30,19 @@ const InnerFilter = ({ filters, filterType: { name, selected }, activeFilter = t
     [dispatch, selected]
   );
 
-  const getFilterPath = ({ context, dimension }) => {
-    switch (name) {
-      case FILTER_TYPES.dimension.name:
-        return `(${context})`;
-      case FILTER_TYPES.value.name:
-        return `(${context} - ${dimension})`;
-      default:
-        return '';
-    }
-  };
+  const getFilterPath = useCallback(
+    ({ context, dimension }) => {
+      switch (name) {
+        case FILTER_TYPES.dimension.name:
+          return `(${context})`;
+        case FILTER_TYPES.value.name:
+          return `(${context} - ${dimension})`;
+        default:
+          return '';
+      }
+    },
+    [name]
+  );
 
   return (
     <div

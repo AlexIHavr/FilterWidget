@@ -3,8 +3,9 @@ import { SEARCH_TYPES, SELECTED_DIMENSIONS } from '../redux/filterWidget/constan
 import store from '../redux/store';
 
 export const getUniqueFilters = (filters, filterType) => {
-  const { name, parent } = filterType;
   if (!filters.length) return filters;
+
+  const { name, parent } = filterType;
 
   return filters.reduce(
     (uniques, filter) =>
