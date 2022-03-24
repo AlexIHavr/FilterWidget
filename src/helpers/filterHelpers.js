@@ -2,23 +2,20 @@ import { setMatchValues } from '../redux/filterWidget/actions';
 import { SEARCH_TYPES, SELECTED_DIMENSIONS } from '../redux/filterWidget/constants';
 import store from '../redux/store';
 
-export const getUniqueFilters = (filters, filterName, extraFilterName) => {
+export const getUniqueFilters = (filters, filterType) => {
+  const { name, parent } = filterType;
   if (!filters.length) return filters;
 
-  return filters.reduce((uniques, filter) => {
-    if (
-      !extraFilterName
-        ? !uniques.some((unique) => unique[filterName] === filter[filterName])
-        : !uniques.some(
-            (unique) =>
-              unique[filterName] === filter[filterName] &&
-              unique[extraFilterName] === filter[extraFilterName]
-          )
-    )
-      uniques.push(filter);
-
-    return uniques;
-  }, []);
+  return filters.reduce(
+    (uniques, filter) =>
+      !uniques.some(
+        (unique) =>
+          unique[name] === filter[name] && (parent ? unique[parent] === filter[parent] : !parent)
+      )
+        ? [...uniques, filter]
+        : uniques,
+    []
+  );
 };
 
 export const getAlphabetSortedFilters = (filters) => {

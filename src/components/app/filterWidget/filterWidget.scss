@@ -1,0 +1,116 @@
+.filterWidgetWrapper {
+  display: flex;
+  margin: 0 !important;
+  z-index: 1;
+
+  input[type='checkbox'].filled-in {
+    &:not(:checked) + span:not(.lever):after {
+      background-color: #9fa1a5;
+      border: none;
+    }
+    &:checked {
+      & + span:not(.lever)::after {
+        background-color: white;
+        border: none;
+      }
+
+      & + span:not(.lever):before {
+        border-right-color: black;
+        border-bottom-color: black;
+      }
+
+      & + span {
+        color: white;
+      }
+    }
+  }
+
+  .active {
+    display: block !important;
+  }
+  .activeFlex {
+    display: flex !important;
+  }
+
+  .filterWidgetBtn {
+    margin: 5px 5px 5px 20px;
+    i {
+      font-size: 2rem;
+    }
+  }
+  .filterWidget {
+    display: none;
+    position: absolute;
+    width: 70%;
+    min-width: 300px;
+    left: 90px;
+    top: 20px;
+    background-color: rgba(83, 85, 94, 0.9);
+    color: white;
+    font-weight: bold;
+    border-top: 5px solid #1e7dd8;
+    transition: opacity 0.2s;
+    -webkit-transition: opacity 0.2s;
+    -moz-transition: opacity 0.2s;
+    -ms-transition: opacity 0.2s;
+    -o-transition: opacity 0.2s;
+
+    & > .row:not(:last-child) {
+      border-bottom: 2px solid grey;
+    }
+
+    .col {
+      display: flex;
+      align-items: center;
+      padding: 0;
+    }
+
+    .row {
+      display: flex;
+      align-items: center;
+      margin: 0 auto;
+      padding: 10px;
+
+      &::after {
+        display: none;
+      }
+
+      &:not(.filterHeader) {
+        width: 90%;
+      }
+
+      &.filterHeader {
+        font-size: 1.3rem;
+        text-shadow: 1px 1px 0px black;
+      }
+
+      &.valueInnerFilter,
+      &.search {
+        display: block;
+
+        .row {
+          margin: 0;
+          padding: 0;
+          border: none;
+        }
+      }
+
+      .filterName {
+        margin-left: 10px;
+      }
+
+      .selectedFilter {
+        margin-left: 10px;
+        color: #96c4e7;
+      }
+
+      .clickable {
+        cursor: pointer;
+      }
+
+      &:not(.filterHeader) i {
+        font-size: 1.5rem;
+      }
+    }
+  }
+}
