@@ -1,4 +1,4 @@
-import React, { useCallback } from 'react';
+import React, { useMemo } from 'react';
 import { useFilterWidget } from '../../../helpers/customHooks';
 import { SELECTED_VALUES } from '../../../redux/filterWidget/constants';
 import './content.scss';
@@ -6,7 +6,7 @@ import './content.scss';
 const Content = () => {
   const { [SELECTED_VALUES]: selectedValues, cars } = useFilterWidget();
 
-  const showCarsByFilters = useCallback(() => {
+  const filteredCars = useMemo(() => {
     const results = cars.filter(({ parameters }) =>
       selectedValues.some(
         ({ context, dimension, value }) =>
@@ -29,7 +29,7 @@ const Content = () => {
         <li className="collection-header">
           <h4>Cars</h4>
         </li>
-        {showCarsByFilters()}
+        {filteredCars}
       </ul>
     </div>
   );
